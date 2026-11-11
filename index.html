@@ -42,6 +42,14 @@
   .links span { color:var(--muted); border-style:dashed }
   .contact a { color:var(--accent); font-weight:700; font-size:1.15rem; text-decoration:none; word-break:break-all }
   .contact a:hover { text-decoration:underline }
+  .projects { display:flex; flex-direction:column }
+  .proj { padding:16px 0; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:8px }
+  .proj:first-child { padding-top:4px }
+  .ph { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px }
+  .proj h3 { font-family:var(--display); font-weight:700; font-size:1.45rem; line-height:1.1; margin:0; overflow-wrap:anywhere }
+  .tag { font-size:.8rem; color:var(--muted); font-weight:700 }
+  .proj p { margin:0; max-width:60ch }
+  code { font-size:.9em; background:var(--accent-soft); padding:1px 5px; border-radius:4px }
   ul.facts { margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:4px; max-width:60ch }
   footer { color:var(--muted); font-size:.85rem; border-top:1px solid var(--line); padding-top:16px }
   a:focus-visible { outline:3px solid var(--accent); outline-offset:2px }
@@ -53,7 +61,7 @@
   <header>
     <span class="mark">Elconfa</span>
     <h1>Massimo Confalonieri</h1>
-    <p>Sviluppo app semplici e utili per la vita di tutti i giorni, nel tempo libero. Nessuna pubblicità, nessun dato raccolto.</p>
+    <p>Sviluppo, nel tempo libero, app semplici e utili per la vita di tutti i giorni e strumenti open source per l'automazione industriale.</p>
   </header>
 
   <section aria-labelledby="h-app">
@@ -72,12 +80,38 @@
   </section>
 
   <section aria-labelledby="h-principi">
-    <h2 id="h-principi">Come sono fatte</h2>
+    <h2 id="h-principi">Come sono fatte le app</h2>
     <ul class="facts">
       <li>I dati restano sul tuo telefono: niente account, niente server.</li>
       <li>Nessuna pubblicità e nessun sistema di tracciamento.</li>
       <li>Funzionano anche senza connessione, quando serve davvero.</li>
     </ul>
+  </section>
+
+  <section aria-labelledby="h-oss">
+    <h2 id="h-oss">Progetti open source</h2>
+    <div class="projects">
+      <article class="proj">
+        <div class="ph"><h3>OpenWiring</h3><span class="tag">TypeScript · macOS, Windows</span></div>
+        <p>CAD elettrico open source: schemi multifilari, quadri elettrici, morsettiere, cavi e PLC.</p>
+        <div class="links"><a href="https://elconfa.github.io/OpenWiring/">Sito</a><a href="https://github.com/elconfa/OpenWiring">GitHub</a></div>
+      </article>
+      <article class="proj">
+        <div class="ph"><h3>SML_MOTION_LAYER</h3><span class="tag">Structured Text · CoDeSys 3.5, TwinCAT 3</span></div>
+        <p>Motion layer CiA402 senza licenze, in Structured Text puro (IEC 61131-3), senza SoftMotion né TF5000. Un blocco funzione per asse: homing, posizione e velocità, jog, CSP con limitazione del jerk, touch probe, multiasse. In produzione su tre macchine.</p>
+        <div class="links"><a href="https://github.com/elconfa/SML_MOTION_LAYER">GitHub</a></div>
+      </article>
+      <article class="proj">
+        <div class="ph"><h3>STFormat</h3><span class="tag">C# · TwinCAT, CoDeSys</span></div>
+        <p>Formattatore per Structured Text (IEC 61131-3): riga di comando e interfaccia grafica, allineamento in colonne, lavora direttamente sui file <code>.TcPOU</code>.</p>
+        <div class="links"><a href="https://github.com/elconfa/STFormat">GitHub</a></div>
+      </article>
+      <article class="proj">
+        <div class="ph"><h3>TwinCatAdsTool</h3><span class="tag">C# · TwinCAT</span></div>
+        <p>Strumento per TwinCAT che esplora, salva e confronta le variabili ADS di un PLC.</p>
+        <div class="links"><a href="https://github.com/elconfa/TwinCatAdsTool">GitHub</a></div>
+      </article>
+    </div>
   </section>
 
   <section aria-labelledby="h-contatti" class="contact">
