@@ -39,38 +39,54 @@
     <label class="check"><input id="consent" type="checkbox" required><span data-k="consent"></span></label>
     <button id="b" type="submit" data-k="btn"></button>
   </form>
+  <button id="act" type="button" hidden></button>
   <p id="m" class="msg" role="status"></p>
   <p class="muted" data-k="note"></p>
 </main>
 <script>
-/* Iscrizione alle novità di Zaino 72 ore. La pagina non salva nulla: invia email e lingua allo script Google
+/* Iscrizione alle novità di Zaino 72 ore, e (con ?a=confirm|unsub&t=…) conferma e cancellazione dai link nelle email. La pagina non salva nulla: invia email e lingua allo script Google
    (Apps Script) del Foglio «Zaino72 iscritti», che manda l'email di conferma. Sorgente e istruzioni nel repo
    privato ZainoEmergenze, cartella newsletter/. */
 "use strict";
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbwMQPLDFG5xKPKY_NK8G8VBPYX_zqCn5Gjo3yGXPO4hr7RiQpxlhuCT_hrtwJXs20Uq/exec";   // App web Apps Script del Foglio «Zaino72 iscritti»
 const PRIVACY = "https://elconfa.github.io/zaino72-privacy/";
 const L = {
-  it: { title: "Novità via email", intro: "Ricevi per email le novità dell'app Zaino 72 ore e, un paio di volte all'anno, un promemoria per controllare kit e scadenze. Poche email, ti cancelli quando vuoi.",
+  it: { cTitle: "Conferma l'iscrizione", cText: "Tocca il pulsante per confermare che vuoi ricevere per email le novità di Zaino 72 ore.", cBtn: "Confermo l'iscrizione",
+    cDone: "Iscrizione confermata, grazie! Puoi chiudere questa pagina.", uTitle: "Cancellazione", uText: "Vuoi smettere di ricevere le email di Zaino 72 ore? Il tuo indirizzo verrà cancellato.", uBtn: "Cancellami",
+    uDone: "Fatto: il tuo indirizzo è stato cancellato e non riceverai più email.", invalid: "Questo link non è valido o è già stato usato.",
+    title: "Novità via email", intro: "Ricevi per email le novità dell'app Zaino 72 ore e, un paio di volte all'anno, un promemoria per controllare kit e scadenze. Poche email, ti cancelli quando vuoi.",
     email: "Il tuo indirizzo email", consent: "Ho letto l'{p} e voglio ricevere le email di Zaino 72 ore.", privacy: "informativa privacy", btn: "Iscrivimi",
     sent: "Fatto! Ti ho mandato un'email: apri il link per confermare l'iscrizione. Se non la trovi, guarda in Spam o Promozioni.",
     badEmail: "Controlla l'indirizzo email.", needConsent: "Spunta la casella per dare il consenso.", busy: "Troppe richieste oggi: riprova domani.", err: "Non riesco a collegarmi. Controlla la connessione e riprova.",
     note: "Il tuo indirizzo lo riceve solo lo sviluppatore, Massimo Confalonieri, e lo usa solo per queste email. Le email partono in copia nascosta." },
-  en: { title: "News by email", intro: "Get news about the Zaino 72 ore app by email and, a couple of times a year, a reminder to check your kits and expiry dates. Few emails, unsubscribe any time.",
+  en: { cTitle: "Confirm your subscription", cText: "Tap the button to confirm that you want to receive Zaino 72 ore news by email.", cBtn: "I confirm",
+    cDone: "Subscription confirmed, thank you! You can close this page.", uTitle: "Unsubscribe", uText: "Do you want to stop receiving Zaino 72 ore emails? Your address will be deleted.", uBtn: "Unsubscribe me",
+    uDone: "Done: your address has been deleted and you won't receive any more emails.", invalid: "This link is not valid or has already been used.",
+    title: "News by email", intro: "Get news about the Zaino 72 ore app by email and, a couple of times a year, a reminder to check your kits and expiry dates. Few emails, unsubscribe any time.",
     email: "Your email address", consent: "I have read the {p} and want to receive Zaino 72 ore emails.", privacy: "privacy policy", btn: "Sign me up",
     sent: "Done! I've sent you an email: open the link to confirm. If you can't find it, check Spam or Promotions.",
     badEmail: "Please check the email address.", needConsent: "Tick the box to give your consent.", busy: "Too many requests today: please try again tomorrow.", err: "Can't connect. Check your connection and try again.",
     note: "Only the developer, Massimo Confalonieri, receives your address and uses it only for these emails, sent as blind copy. Emails are mainly in Italian, with a short English summary." },
-  fr: { title: "Nouveautés par e-mail", intro: "Recevez par e-mail les nouveautés de l'app Zaino 72 ore et, deux fois par an environ, un rappel pour vérifier vos kits et les dates de péremption. Peu d'e-mails, désinscription à tout moment.",
+  fr: { cTitle: "Confirmez votre inscription", cText: "Touchez le bouton pour confirmer que vous voulez recevoir par e-mail les nouveautés de Zaino 72 ore.", cBtn: "Je confirme",
+    cDone: "Inscription confirmée, merci ! Vous pouvez fermer cette page.", uTitle: "Désinscription", uText: "Voulez-vous ne plus recevoir les e-mails de Zaino 72 ore ? Votre adresse sera supprimée.", uBtn: "Me désinscrire",
+    uDone: "C'est fait : votre adresse a été supprimée et vous ne recevrez plus d'e-mails.", invalid: "Ce lien n'est pas valide ou a déjà été utilisé.",
+    title: "Nouveautés par e-mail", intro: "Recevez par e-mail les nouveautés de l'app Zaino 72 ore et, deux fois par an environ, un rappel pour vérifier vos kits et les dates de péremption. Peu d'e-mails, désinscription à tout moment.",
     email: "Votre adresse e-mail", consent: "J'ai lu la {p} et je veux recevoir les e-mails de Zaino 72 ore.", privacy: "politique de confidentialité", btn: "M'inscrire",
     sent: "C'est fait ! Je vous ai envoyé un e-mail : ouvrez le lien pour confirmer. Sinon, regardez dans Spam ou Promotions.",
     badEmail: "Vérifiez l'adresse e-mail.", needConsent: "Cochez la case pour donner votre consentement.", busy: "Trop de demandes aujourd'hui : réessayez demain.", err: "Connexion impossible. Vérifiez votre connexion et réessayez.",
     note: "Seul le développeur, Massimo Confalonieri, reçoit votre adresse et l'utilise uniquement pour ces e-mails, envoyés en copie cachée. Les e-mails sont surtout en italien, avec un court résumé en anglais." },
-  de: { title: "Neuigkeiten per E-Mail", intro: "Erhalte Neuigkeiten zur App Zaino 72 ore per E-Mail und ein- bis zweimal im Jahr eine Erinnerung, Sets und Ablaufdaten zu prüfen. Wenige E-Mails, jederzeit abmeldbar.",
+  de: { cTitle: "Anmeldung bestätigen", cText: "Tippe auf die Schaltfläche, um zu bestätigen, dass du Neuigkeiten zu Zaino 72 ore per E-Mail erhalten möchtest.", cBtn: "Ich bestätige",
+    cDone: "Anmeldung bestätigt, danke! Du kannst diese Seite schließen.", uTitle: "Abmelden", uText: "Möchtest du keine E-Mails von Zaino 72 ore mehr erhalten? Deine Adresse wird gelöscht.", uBtn: "Abmelden",
+    uDone: "Erledigt: Deine Adresse wurde gelöscht, du erhältst keine E-Mails mehr.", invalid: "Dieser Link ist ungültig oder wurde schon verwendet.",
+    title: "Neuigkeiten per E-Mail", intro: "Erhalte Neuigkeiten zur App Zaino 72 ore per E-Mail und ein- bis zweimal im Jahr eine Erinnerung, Sets und Ablaufdaten zu prüfen. Wenige E-Mails, jederzeit abmeldbar.",
     email: "Deine E-Mail-Adresse", consent: "Ich habe die {p} gelesen und möchte E-Mails von Zaino 72 ore erhalten.", privacy: "Datenschutzerklärung", btn: "Anmelden",
     sent: "Geschafft! Ich habe dir eine E-Mail geschickt: Öffne den Link, um die Anmeldung zu bestätigen. Schau sonst im Spam- oder Werbeordner nach.",
     badEmail: "Bitte prüfe die E-Mail-Adresse.", needConsent: "Setze das Häkchen, um zuzustimmen.", busy: "Heute zu viele Anfragen: Bitte morgen erneut versuchen.", err: "Keine Verbindung. Prüfe deine Verbindung und versuche es erneut.",
     note: "Nur der Entwickler, Massimo Confalonieri, erhält deine Adresse und nutzt sie nur für diese E-Mails, die als Blindkopie verschickt werden. Die E-Mails sind meist auf Italienisch, mit kurzer englischer Zusammenfassung." },
-  es: { title: "Novedades por correo", intro: "Recibe por correo las novedades de la app Zaino 72 ore y, un par de veces al año, un recordatorio para revisar tus kits y fechas de caducidad. Pocos correos, te das de baja cuando quieras.",
+  es: { cTitle: "Confirma tu suscripción", cText: "Toca el botón para confirmar que quieres recibir por correo las novedades de Zaino 72 ore.", cBtn: "Confirmo",
+    cDone: "Suscripción confirmada, ¡gracias! Puedes cerrar esta página.", uTitle: "Darse de baja", uText: "¿Quieres dejar de recibir los correos de Zaino 72 ore? Tu dirección se borrará.", uBtn: "Darme de baja",
+    uDone: "Hecho: tu dirección se ha borrado y no recibirás más correos.", invalid: "Este enlace no es válido o ya se ha usado.",
+    title: "Novedades por correo", intro: "Recibe por correo las novedades de la app Zaino 72 ore y, un par de veces al año, un recordatorio para revisar tus kits y fechas de caducidad. Pocos correos, te das de baja cuando quieras.",
     email: "Tu dirección de correo", consent: "He leído la {p} y quiero recibir los correos de Zaino 72 ore.", privacy: "política de privacidad", btn: "Suscribirme",
     sent: "¡Hecho! Te he enviado un correo: abre el enlace para confirmar. Si no lo encuentras, mira en Spam o Promociones.",
     badEmail: "Revisa la dirección de correo.", needConsent: "Marca la casilla para dar tu consentimiento.", busy: "Demasiadas solicitudes hoy: inténtalo mañana.", err: "No puedo conectar. Revisa tu conexión e inténtalo de nuevo.",
@@ -88,6 +104,30 @@ cs.append(pre, a, post);
 
 const f = document.getElementById("f"), b = document.getElementById("b"), m = document.getElementById("m");
 const say = (s, ok) => { m.textContent = s; m.className = "msg " + (ok ? "ok" : "bad"); };
+// fetch senza cookie (cross-origin): l'account Google del browser non conta. text/plain: niente preflight CORS.
+const call = async body => (await fetch(ENDPOINT, { method: "POST", credentials: "omit", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) })).json();
+
+// Link dalle email: conferma (?a=confirm) o cancellazione (?a=unsub), sempre con un tocco esplicito
+const act = q.get("a"), tok = q.get("t") || "";
+if (act === "confirm" || act === "unsub") {
+  const c = act === "confirm", ab = document.getElementById("act");
+  f.hidden = true; document.querySelector('[data-k="note"]').hidden = true;
+  document.querySelector('[data-k="title"]').textContent = c ? t.cTitle : t.uTitle;
+  document.querySelector('[data-k="intro"]').textContent = c ? t.cText : t.uText;
+  document.title = "Zaino 72 ore – " + (c ? t.cTitle : t.uTitle);
+  if (!/^[0-9a-f]{40}$/.test(tok)) { ab.remove(); say(t.invalid); }
+  else {
+    ab.textContent = c ? t.cBtn : t.uBtn; ab.hidden = false;
+    ab.addEventListener("click", async () => {
+      ab.disabled = true; say("", true);
+      try {
+        const d = await call({ a: act, t: tok });
+        if (d.ok) { say(c ? t.cDone : t.uDone, true); ab.remove(); }
+        else { say(d.err === "invalid" ? t.invalid : t.err); ab.disabled = false; }
+      } catch (x) { say(t.err); ab.disabled = false; }
+    });
+  }
+}
 f.addEventListener("submit", async e => {
   e.preventDefault();
   const email = f.email.value.trim();
@@ -95,10 +135,7 @@ f.addEventListener("submit", async e => {
   if (!f.querySelector("#consent").checked) return say(t.needConsent);
   b.disabled = true; say("", true);
   try {
-    // text/plain: richiesta «semplice», niente preflight CORS verso Apps Script
-    const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ a: "subscribe", email, lang, consent: true, website: f.website.value, src: (q.get("src") || "web").slice(0, 20) }) });
-    const d = await r.json();
+    const d = await call({ a: "subscribe", email, lang, consent: true, website: f.website.value, src: (q.get("src") || "web").slice(0, 20) });
     if (d.ok) { say(t.sent, true); f.hidden = true; }
     else { say(d.err === "email" ? t.badEmail : d.err === "busy" ? t.busy : t.err); b.disabled = false; }
   } catch (x) { say(t.err); b.disabled = false; }
