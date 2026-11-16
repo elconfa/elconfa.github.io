@@ -3,128 +3,319 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Elconfa — app di Massimo</title>
-<meta name="description" content="App semplici e utili sviluppate da Massimo. Zaino 72 ore: kit di emergenza per la famiglia.">
+<title>Massimo Confalonieri</title>
+<meta name="description" content="Massimo Confalonieri: automazione industriale, software open source e app, interprete e traduttore LIS e LIST.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Massimo Confalonieri">
+<meta property="og:description" content="Automazione industriale, software open source e app, interprete e traduttore LIS e LIST.">
+<meta property="og:url" content="https://elconfa.github.io/">
+<meta property="og:image" content="https://elconfa.github.io/img/openwiring.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://elconfa.github.io/">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
+  /* Layout: un foglio di schema elettrico. Righello di colonne numerate in alto, sezioni come aree del foglio,
+     contatti chiusi in un cartiglio. Arancio per le azioni, blu "numero filo" per le etichette tecniche. */
   :root {
-    --bg:#EEF2F1; --surface:#FFFFFF; --ink:#13202A; --muted:#566570; --line:#D3DCD9;
-    --accent:#C2410C; --accent-soft:#FBE3D6;
+    --paper:#EEF2F1; --sheet:#FFFFFF; --ink:#13202A; --muted:#566570; --line:#D3DCD9; --grid:#E2E8E6;
+    --accent:#C2410C; --accent-ink:#FFFFFF; --accent-soft:#FBE3D6; --wire:#0B5CAD; --wire-soft:#E1ECF7;
     --display:"Barlow Condensed","Arial Narrow",sans-serif;
     --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   }
-  @media (prefers-color-scheme: dark) { :root {
-    --bg:#0E1519; --surface:#162026; --ink:#E6EDEF; --muted:#94A3AB; --line:#26343C;
-    --accent:#FF7D45; --accent-soft:#3A2116; color-scheme:dark; } }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --paper:#0E1519; --sheet:#162026; --ink:#E6EDEF; --muted:#94A3AB; --line:#26343C; --grid:#1C2930;
+    --accent:#FF7D45; --accent-ink:#1A0D06; --accent-soft:#3A2116; --wire:#6FB1F5; --wire-soft:#16283A; color-scheme:dark } }
+  :root[data-theme="dark"] {
+    --paper:#0E1519; --sheet:#162026; --ink:#E6EDEF; --muted:#94A3AB; --line:#26343C; --grid:#1C2930;
+    --accent:#FF7D45; --accent-ink:#1A0D06; --accent-soft:#3A2116; --wire:#6FB1F5; --wire-soft:#16283A; color-scheme:dark }
+
   * { box-sizing:border-box }
-  body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.6 var(--body); }
-  .wrap { max-width:720px; margin:0 auto; padding-block:56px 40px;
-          padding-left:max(20px, env(safe-area-inset-left)); padding-right:max(20px, env(safe-area-inset-right)); }
-  header { display:flex; flex-direction:column; gap:6px; margin-bottom:44px }
-  .mark { font-family:var(--display); font-weight:700; font-size:.95rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent) }
-  h1 { font-family:var(--display); font-weight:700; font-size:clamp(2.6rem, 9vw, 3.6rem); line-height:1; margin:0 }
-  header p { margin:6px 0 0; color:var(--muted); max-width:46ch }
-  h2 { font-family:var(--display); font-weight:700; font-size:1rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
-       margin:0 0 12px; padding-bottom:8px; border-bottom:2px solid var(--ink) }
-  section { margin-bottom:40px }
-  .app { display:grid; grid-template-columns:88px 1fr; gap:18px; align-items:start; background:var(--surface);
-         border:1px solid var(--line); border-radius:14px; padding:20px }
-  .app img { width:88px; height:88px; border-radius:20px; display:block }
-  .app h3 { font-family:var(--display); font-weight:700; font-size:1.7rem; line-height:1.05; margin:0 0 6px }
-  .app p { margin:0 0 12px; max-width:56ch }
-  .links { display:flex; flex-wrap:wrap; gap:8px }
-  .links a, .links span { display:inline-flex; align-items:center; min-height:40px; padding:6px 14px; border-radius:8px; font-weight:700;
-           text-decoration:none; font-size:.95rem; border:1px solid var(--line); color:var(--ink) }
+  html { scroll-behavior:smooth }
+  body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.6 var(--body);
+    background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:24px 24px; }
+  a { color:inherit }
+  a:focus-visible, button:focus-visible { outline:3px solid var(--accent); outline-offset:3px; border-radius:4px }
+  .wrap { max-width:1040px; margin:0 auto; padding-block:0;
+    padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+
+  /* Barra in alto */
+  .top { display:flex; align-items:center; justify-content:space-between; gap:12px; padding-block:22px; flex-wrap:wrap }
+  .brand { font-family:var(--display); font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); text-decoration:none; font-size:1rem }
+  nav { display:flex; gap:4px; flex-wrap:wrap }
+  nav a { text-decoration:none; font-weight:700; font-size:.92rem; padding:6px 10px; border-radius:6px; color:var(--muted) }
+  nav a:hover { color:var(--ink); background:var(--sheet) }
+
+  /* Foglio */
+  .sheet { background:var(--sheet); border:1px solid var(--line); border-radius:4px; position:relative }
+  .ruler { display:grid; grid-template-columns:repeat(8, 1fr); border-bottom:1px solid var(--line);
+    font:500 .7rem/1 var(--mono); color:var(--muted); font-variant-numeric:tabular-nums }
+  .ruler span { padding:6px 0; text-align:center; border-left:1px solid var(--line) }
+  .ruler span:first-child { border-left:0 }
+  @media (max-width:560px) { .ruler { grid-template-columns:repeat(4, 1fr) } .ruler span:nth-child(n+5) { display:none } }
+
+  /* Apertura */
+  .hero { display:grid; grid-template-columns:minmax(0, 1.5fr) minmax(0, 1fr); gap:40px; padding:44px 44px 40px }
+  .eyebrow { font:500 .78rem/1.3 var(--mono); color:var(--wire); letter-spacing:.04em; margin:0 0 14px }
+  h1 { font-family:var(--display); font-weight:700; font-size:clamp(3rem, 9vw, 5.6rem); line-height:.9; margin:0; letter-spacing:-.01em; text-wrap:balance }
+  h1 .last { color:var(--accent) }
+  .wireline { display:block; width:100%; max-width:520px; height:18px; margin:18px 0 16px; overflow:visible }
+  .wireline path { fill:none; stroke:var(--ink); stroke-width:1.6 }
+  .wireline circle { fill:var(--ink) }
+  .wireline text { fill:var(--wire); font:500 9px var(--mono) }
+  .lead { font-size:1.18rem; max-width:34ch; margin:0 0 24px; text-wrap:pretty }
+  .cta { display:flex; gap:10px; flex-wrap:wrap }
+  .btn { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 18px; border-radius:6px; font-weight:700; text-decoration:none;
+    border:1px solid var(--line); background:var(--sheet); color:var(--ink); font-size:.98rem; cursor:pointer; font-family:var(--body) }
+  .btn:hover { border-color:var(--accent) }
+  .btn.primary { background:var(--accent); border-color:var(--accent); color:var(--accent-ink) }
+  .btn.primary:hover { filter:brightness(1.07) }
+  .roles { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; border-top:2px solid var(--ink); align-self:start }
+  .roles li { display:grid; grid-template-columns:44px minmax(0, 1fr); gap:12px; padding:14px 0; border-bottom:1px solid var(--line) }
+  .roles .tag { font:500 .8rem/1.6 var(--mono); color:var(--wire) }
+  .roles b { display:block; font-family:var(--display); font-size:1.35rem; line-height:1.1; font-weight:700 }
+  .roles span.d { color:var(--muted); font-size:.92rem }
+
+  /* Sezioni */
+  section { padding-block:56px 8px; scroll-margin-top:12px }
+  .sh { display:flex; align-items:baseline; gap:14px; border-bottom:2px solid var(--ink); padding-bottom:8px; margin-bottom:26px }
+  .sh h2 { font-family:var(--display); font-weight:700; font-size:clamp(1.9rem, 5vw, 2.6rem); line-height:1; margin:0 }
+  .sh .ref { font:500 .78rem var(--mono); color:var(--wire); margin-left:auto }
+
+  .about { display:grid; grid-template-columns:minmax(0, 1.2fr) minmax(0, 1fr); gap:40px }
+  .about p { margin:0 0 14px; max-width:62ch }
+  .about p:first-child { font-size:1.12rem }
+  .traits { display:grid; gap:12px; align-content:start }
+  .trait { background:var(--sheet); border:1px solid var(--line); border-radius:4px; padding:16px 18px }
+  .trait h3 { margin:0 0 6px; font-family:var(--display); font-size:1.3rem; line-height:1.1 }
+  .trait p { margin:0; color:var(--muted); font-size:.95rem }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px }
+  .chip { font:500 .74rem/1 var(--mono); padding:5px 8px; border-radius:4px; background:var(--wire-soft); color:var(--wire) }
+  .trait.lis { border-color:var(--accent); background:linear-gradient(var(--accent-soft), var(--accent-soft)) }
+  .trait.lis .chip { background:var(--sheet); color:var(--accent) }
+
+  /* Lavori */
+  .feature { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.25fr); gap:0; overflow:hidden }
+  .feature .txt { padding:30px 30px 28px; display:flex; flex-direction:column; gap:12px; min-width:0 }
+  .kicker { font:500 .75rem var(--mono); color:var(--wire); letter-spacing:.03em }
+  .feature h3 { font-family:var(--display); font-size:2.4rem; line-height:1; margin:0 }
+  .feature p { margin:0; max-width:48ch }
+  .feature ul { margin:0; padding-left:1.1em; color:var(--muted); font-size:.95rem; display:grid; gap:2px }
+  .feature .shot { background:var(--grid); border-left:1px solid var(--line); display:flex; align-items:center; padding:18px; min-width:0 }
+  .feature .shot img { width:100%; height:auto; display:block; border-radius:4px; border:1px solid var(--line); box-shadow:0 10px 30px -12px rgba(19,32,42,.35) }
+  .links { display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:6px }
+  .links a { text-decoration:none; font-weight:700; font-size:.92rem; padding:7px 13px; border-radius:6px; border:1px solid var(--line) }
   .links a:hover { border-color:var(--accent) }
-  .links span { color:var(--muted); border-style:dashed }
-  .links a.primary { background:var(--accent); border-color:var(--accent); color:#fff }
-  .links a.primary:hover { filter:brightness(1.08) }
-  @media (prefers-color-scheme: dark) { .links a.primary { color:#1a0d06 } }
-  .app p.preview { color:var(--muted); font-size:.95rem }
-  .contact a { color:var(--accent); font-weight:700; font-size:1.15rem; text-decoration:none; word-break:break-all }
-  .contact a:hover { text-decoration:underline }
-  .projects { display:flex; flex-direction:column }
-  .proj { padding:16px 0; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:8px }
-  .proj:first-child { padding-top:4px }
-  .ph { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px }
-  .proj h3 { font-family:var(--display); font-weight:700; font-size:1.45rem; line-height:1.1; margin:0; overflow-wrap:anywhere }
-  .tag { font-size:.8rem; color:var(--muted); font-weight:700 }
-  .proj p { margin:0; max-width:60ch }
-  code { font-size:.9em; background:var(--accent-soft); padding:1px 5px; border-radius:4px }
-  ul.facts { margin:0; padding-left:1.2em; display:flex; flex-direction:column; gap:4px; max-width:60ch }
-  footer { color:var(--muted); font-size:.85rem; border-top:1px solid var(--line); padding-top:16px }
-  a:focus-visible { outline:3px solid var(--accent); outline-offset:2px }
-  @media (max-width:480px) { .app { grid-template-columns:1fr } .app img { width:72px; height:72px; border-radius:16px } }
+
+  .grid3 { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-top:14px }
+  .card { background:var(--sheet); border:1px solid var(--line); border-radius:4px; padding:20px; display:flex; flex-direction:column; gap:8px; min-width:0 }
+  .card h3 { font-family:var(--display); font-size:1.55rem; line-height:1.05; margin:0; overflow-wrap:anywhere }
+  .card p { margin:0; font-size:.95rem }
+  .card .proof { font:500 .76rem/1.5 var(--mono); color:var(--muted) }
+
+  .app { display:grid; grid-template-columns:88px minmax(0, 1fr) auto; gap:22px; align-items:center; margin-top:14px; padding:22px }
+  .app img { width:88px; height:88px; border-radius:20px; display:block }
+  .app h3 { font-family:var(--display); font-size:1.9rem; line-height:1; margin:0 0 6px }
+  .app p { margin:0; max-width:58ch }
+  .app .note { color:var(--muted); font-size:.9rem; margin-top:8px }
+  .app .cta { flex-direction:column; align-items:stretch }
+
+  /* Cartiglio */
+  .titleblock { display:grid; grid-template-columns:1.3fr 1.4fr 1fr .8fr; margin-top:6px }
+  .titleblock > div { padding:14px 16px; border-left:1px solid var(--line); min-width:0 }
+  .titleblock > div:first-child { border-left:0 }
+  .tb-l { display:block; font:500 .68rem var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px }
+  .tb-v { font-weight:700; font-size:1.05rem; overflow-wrap:anywhere }
+  .tb-v a { color:var(--accent); text-decoration:none }
+  .tb-v a:hover { text-decoration:underline }
+  .tb-list { display:flex; flex-wrap:wrap; gap:4px 16px }
+  .copy { margin-left:6px; font:500 .72rem var(--mono); padding:3px 7px; border-radius:4px; border:1px solid var(--line); background:transparent; color:var(--muted); cursor:pointer; vertical-align:middle }
+  .copy:hover { color:var(--ink); border-color:var(--ink) }
+  .sheetno { font-family:var(--display); font-size:2.2rem; line-height:1; font-weight:700 }
+  footer { padding-block:22px 40px; color:var(--muted); font-size:.85rem; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap }
+
+  @media (max-width:860px) {
+    .hero, .about, .feature { grid-template-columns:minmax(0, 1fr) }
+    .hero { padding:30px 22px; gap:28px }
+    .feature .shot { border-left:0; border-top:1px solid var(--line) }
+    .grid3 { grid-template-columns:minmax(0, 1fr) }
+    .app { grid-template-columns:72px minmax(0, 1fr) }
+    .app img { width:72px; height:72px; border-radius:16px }
+    .app .cta { grid-column:1 / -1 }
+    .titleblock { grid-template-columns:1fr 1fr }
+    .titleblock > div:nth-child(3) { border-left:0 }
+    .titleblock > div:nth-child(n+3) { border-top:1px solid var(--line) }
+  }
+  @media (max-width:480px) {
+    .titleblock { grid-template-columns:minmax(0, 1fr) }
+    .titleblock > div { border-left:0; border-top:1px solid var(--line) }
+    .titleblock > div:first-child { border-top:0 }
+    .feature .txt { padding:22px 20px }
+    .app { grid-template-columns:minmax(0, 1fr); align-items:start }
+  }
+
+  /* Un solo momento animato: il filo sotto il nome si disegna all'apertura */
+  .wireline path { stroke-dasharray:600; stroke-dashoffset:0; animation:draw 1.4s ease-out both }
+  @keyframes draw { from { stroke-dashoffset:600 } to { stroke-dashoffset:0 } }
+  @media (prefers-reduced-motion: reduce) { .wireline path { animation:none } html { scroll-behavior:auto } }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <header>
-    <span class="mark">Elconfa</span>
-    <h1>Massimo</h1>
-    <p>Sviluppo, nel tempo libero, app semplici e utili per la vita di tutti i giorni e strumenti open source per l'automazione industriale.</p>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top">Elconfa</a>
+    <nav aria-label="Sezioni">
+      <a href="#chi-sono">Chi sono</a>
+      <a href="#lavori">Lavori</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
   </header>
 
-  <section aria-labelledby="h-app">
-    <h2 id="h-app">App</h2>
-    <article class="app">
-      <img src="img/zaino72.png" alt="Icona di Zaino 72 ore" width="88" height="88">
-      <div>
-        <h3>Zaino 72 ore</h3>
-        <p>Prepara lo zaino di evacuazione e le scorte di casa, auto e animali per le prime 72 ore di un'emergenza. Quantità calcolate sulla famiglia, promemoria delle scadenze, piano familiare, guide rapide e un pulsante SOS che prepara l'SMS con la tua posizione.</p>
-        <p class="preview">L'app è in anteprima (test chiuso su Google Play). Iscriviti alle novità con l'indirizzo Gmail che usi su Google Play: ti mando l'invito per provarla e, quando esce, l'avviso.</p>
-        <div class="links">
-          <a class="primary" href="zaino72-notizie/?src=sito">Prova l'anteprima e iscriviti alle novità</a>
-          <a href="https://elconfa.github.io/zaino72-privacy/">Informativa privacy</a>
+  <main id="top">
+    <div class="sheet">
+      <div class="ruler" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Automazione · Software · Lingua dei segni</p>
+          <h1>Massimo<br><span class="last">Confalonieri</span></h1>
+          <svg class="wireline" viewBox="0 0 520 18" aria-hidden="true">
+            <circle cx="3" cy="9" r="3"></circle>
+            <path d="M3 9 H517"></path>
+            <circle cx="517" cy="9" r="3"></circle>
+            <text x="230" y="5">1.01</text>
+          </svg>
+          <p class="lead">Progetto e programmo l'automazione delle macchine. Scrivo software open source per chi fa il mio stesso lavoro. Sono interprete e traduttore LIS e LIST.</p>
+          <div class="cta">
+            <a class="btn primary" href="#contatti">Contattami</a>
+            <a class="btn" href="#lavori">Vedi i lavori</a>
+            <a class="btn" href="https://www.linkedin.com/in/massimo-confalonieri-b49749127">LinkedIn</a>
+          </div>
+        </div>
+        <ul class="roles" aria-label="Cosa faccio">
+          <li><span class="tag">-A1</span><div><b>Automazione industriale</b><span class="d">PLC, motion control e schemi elettrici</span></div></li>
+          <li><span class="tag">-A2</span><div><b>Software e app</b><span class="d">Strumenti open source e app per il telefono</span></div></li>
+          <li><span class="tag">-A3</span><div><b>Interprete LIS e LIST</b><span class="d">Lingua dei segni italiana e LIS tattile</span></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <section id="chi-sono" aria-labelledby="h-chi">
+      <div class="sh"><h2 id="h-chi">Chi sono</h2><span class="ref">/1.2</span></div>
+      <div class="about">
+        <div>
+          <p>Lavoro nell'automazione industriale: programmo PLC Siemens, Beckhoff TwinCAT e CODESYS, metto in moto assi e azionamenti, disegno schemi elettrici e quadri.</p>
+          <p>Quando uno strumento mi manca, lo scrivo. Così sono nati un CAD elettrico, un motion layer CiA402 che gira su macchine in produzione, un formattatore per lo Structured Text e un'app per prepararsi alle emergenze. Li pubblico come open source, perché possano servire anche ad altri.</p>
+          <p>Sono anche interprete e traduttore di Lingua dei Segni Italiana (LIS) e di LIS tattile (LIST), la lingua dei segni usata con le persone sordocieche: si segna a contatto, sulle mani di chi ascolta.</p>
+        </div>
+        <div class="traits">
+          <div class="trait">
+            <h3>Automazione</h3>
+            <p>Dal progetto elettrico alla messa in servizio.</p>
+            <div class="chips"><span class="chip">Siemens TIA</span><span class="chip">TwinCAT 3</span><span class="chip">CODESYS 3.5</span><span class="chip">IEC 61131-3</span><span class="chip">CiA402</span><span class="chip">EtherCAT</span></div>
+          </div>
+          <div class="trait">
+            <h3>Software</h3>
+            <p>Applicazioni desktop, strumenti da riga di comando e app Android.</p>
+            <div class="chips"><span class="chip">TypeScript</span><span class="chip">C#</span><span class="chip">Structured Text</span><span class="chip">Electron</span><span class="chip">Android</span></div>
+          </div>
+          <div class="trait lis">
+            <h3>Interprete e traduttore</h3>
+            <p>Interpretariato e traduzione tra italiano e lingua dei segni, anche tattile.</p>
+            <div class="chips"><span class="chip">LIS</span><span class="chip">LIST</span><span class="chip">Accessibilità</span></div>
+          </div>
         </div>
       </div>
-    </article>
-  </section>
+    </section>
 
-  <section aria-labelledby="h-principi">
-    <h2 id="h-principi">Come sono fatte le app</h2>
-    <ul class="facts">
-      <li>I dati restano sul tuo telefono: niente account, niente server.</li>
-      <li>Nessuna pubblicità e nessun sistema di tracciamento.</li>
-      <li>Funzionano anche senza connessione, quando serve davvero.</li>
-    </ul>
-  </section>
+    <section id="lavori" aria-labelledby="h-lavori">
+      <div class="sh"><h2 id="h-lavori">Lavori</h2><span class="ref">/1.3</span></div>
 
-  <section aria-labelledby="h-oss">
-    <h2 id="h-oss">Progetti open source</h2>
-    <div class="projects">
-      <article class="proj">
-        <div class="ph"><h3>OpenWiring</h3><span class="tag">TypeScript · macOS, Windows</span></div>
-        <p>CAD elettrico open source: schemi multifilari, quadri elettrici, morsettiere, cavi e PLC.</p>
-        <div class="links"><a href="https://elconfa.github.io/OpenWiring/">Sito</a><a href="https://github.com/elconfa/OpenWiring">GitHub</a></div>
+      <article class="sheet feature">
+        <div class="txt">
+          <span class="kicker">Open source · GPL · macOS, Windows</span>
+          <h3>OpenWiring</h3>
+          <p>CAD elettrico per schemi multifilari e quadri: dal disegno escono da sole morsettiere, cavi, liste e pagine PLC.</p>
+          <ul>
+            <li>Rimandi automatici tra bobine e contatti</li>
+            <li>Morsettiere, cavi e piani di cablaggio</li>
+            <li>Schede PLC con export per TIA, TwinCAT e CODESYS</li>
+            <li>Interfaccia in 6 lingue</li>
+          </ul>
+          <div class="links"><a href="https://elconfa.github.io/OpenWiring/">Sito</a><a href="https://github.com/elconfa/OpenWiring">GitHub</a></div>
+        </div>
+        <div class="shot"><img src="img/openwiring.jpg" alt="OpenWiring con lo schema del circuito di comando di un avviatore per pompa" width="1400" height="875" loading="lazy"></div>
       </article>
-      <article class="proj">
-        <div class="ph"><h3>SML_MOTION_LAYER</h3><span class="tag">Structured Text · CoDeSys 3.5, TwinCAT 3</span></div>
-        <p>Motion layer CiA402 senza licenze, in Structured Text puro (IEC 61131-3), senza SoftMotion né TF5000. Un blocco funzione per asse: homing, posizione e velocità, jog, CSP con limitazione del jerk, touch probe, multiasse. In produzione su tre macchine.</p>
-        <div class="links"><a href="https://github.com/elconfa/SML_MOTION_LAYER">GitHub</a></div>
-      </article>
-      <article class="proj">
-        <div class="ph"><h3>STFormat</h3><span class="tag">C# · TwinCAT, CoDeSys</span></div>
-        <p>Formattatore per Structured Text (IEC 61131-3): riga di comando e interfaccia grafica, allineamento in colonne, lavora direttamente sui file <code>.TcPOU</code>.</p>
-        <div class="links"><a href="https://github.com/elconfa/STFormat">GitHub</a></div>
-      </article>
-      <article class="proj">
-        <div class="ph"><h3>TwinCatAdsTool</h3><span class="tag">C# · TwinCAT</span></div>
-        <p>Strumento per TwinCAT che esplora, salva e confronta le variabili ADS di un PLC.</p>
-        <div class="links"><a href="https://github.com/elconfa/TwinCatAdsTool">GitHub</a></div>
-      </article>
-    </div>
-  </section>
 
-  <section aria-labelledby="h-contatti" class="contact">
-    <h2 id="h-contatti">Contatti</h2>
-    <p>Per domande, segnalazioni o suggerimenti scrivi a<br><a href="mailto:elconfa.ing@gmail.com">elconfa.ing@gmail.com</a></p>
-  </section>
+      <div class="grid3">
+        <article class="card">
+          <span class="kicker">Structured Text · CODESYS, TwinCAT</span>
+          <h3>SML_MOTION_LAYER</h3>
+          <p>Motion layer CiA402 senza licenze, in Structured Text puro. Un blocco funzione per asse: homing, posizione, velocità, jog, CSP con limitazione del jerk.</p>
+          <span class="proof">In produzione su 3 macchine · CX8190 + 6 azionamenti</span>
+          <div class="links"><a href="https://github.com/elconfa/SML_MOTION_LAYER">GitHub</a></div>
+        </article>
+        <article class="card">
+          <span class="kicker">C# · TwinCAT, CODESYS</span>
+          <h3>STFormat</h3>
+          <p>Formattatore per Structured Text: riga di comando e interfaccia grafica, allineamento in colonne, lavora sui file .TcPOU.</p>
+          <span class="proof">Installabile con Scoop</span>
+          <div class="links"><a href="https://github.com/elconfa/STFormat">GitHub</a></div>
+        </article>
+        <article class="card">
+          <span class="kicker">C# · TwinCAT</span>
+          <h3>TwinCatAdsTool</h3>
+          <p>Esplora, salva e confronta le variabili ADS di un PLC TwinCAT.</p>
+          <span class="proof">Utile prima e dopo una modifica in macchina</span>
+          <div class="links"><a href="https://github.com/elconfa/TwinCatAdsTool">GitHub</a></div>
+        </article>
+      </div>
 
-  <footer>© 2026 Massimo</footer>
-</main>
+      <article class="sheet app">
+        <img src="img/zaino72.png" alt="Icona di Zaino 72 ore" width="88" height="88">
+        <div>
+          <span class="kicker">App Android · in anteprima</span>
+          <h3>Zaino 72 ore</h3>
+          <p>Prepara lo zaino di evacuazione e le scorte di casa, auto e animali per le prime 72 ore di un'emergenza. Quantità calcolate sulla famiglia, promemoria delle scadenze e un pulsante SOS.</p>
+          <p class="note">I dati restano sul telefono: niente account, niente pubblicità, funziona senza connessione.</p>
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="https://elconfa.github.io/zaino72-notizie/?src=sito">Prova l'anteprima</a>
+          <a class="btn" href="https://elconfa.github.io/zaino72-privacy/">Privacy</a>
+        </div>
+      </article>
+    </section>
+
+    <section id="contatti" aria-labelledby="h-contatti">
+      <div class="sh"><h2 id="h-contatti">Contatti</h2><span class="ref">/1.4</span></div>
+      <p style="margin:0 0 18px; max-width:60ch">Per un progetto di automazione, un servizio di interpretariato LIS o LIST, o una domanda sui miei programmi, scrivimi.</p>
+      <div class="sheet titleblock">
+        <div><span class="tb-l">Nome</span><span class="tb-v">Massimo Confalonieri</span></div>
+        <div><span class="tb-l">Email</span><span class="tb-v"><a href="mailto:elconfa.ing@gmail.com" id="mail">elconfa.ing@gmail.com</a><button class="copy" id="copy" type="button">copia</button></span></div>
+        <div><span class="tb-l">Profili</span><span class="tb-v tb-list"><a href="https://www.linkedin.com/in/massimo-confalonieri-b49749127">LinkedIn</a><a href="https://github.com/elconfa">GitHub</a></span></div>
+        <div><span class="tb-l">Foglio</span><span class="sheetno">1/1</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Massimo Confalonieri</span>
+    <span>Rev. 2026-11</span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('copy').addEventListener('click', function () {
+    var b = this, t = document.getElementById('mail').textContent;
+    var done = function () { b.textContent = 'copiato'; setTimeout(function () { b.textContent = 'copia'; }, 1600); };
+    try {
+      navigator.clipboard.writeText(t).then(done, function () { select(); });
+    } catch (e) { select(); }
+    function select() { var r = document.createRange(); r.selectNodeContents(document.getElementById('mail')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  });
+</script>
 </body>
 </html>
