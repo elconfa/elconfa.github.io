@@ -40,6 +40,10 @@
            text-decoration:none; font-size:.95rem; border:1px solid var(--line); color:var(--ink) }
   .links a:hover { border-color:var(--accent) }
   .links span { color:var(--muted); border-style:dashed }
+  .links a.primary { background:var(--accent); border-color:var(--accent); color:#fff }
+  .links a.primary:hover { filter:brightness(1.08) }
+  @media (prefers-color-scheme: dark) { .links a.primary { color:#1a0d06 } }
+  .app p.preview { color:var(--muted); font-size:.95rem }
   .contact a { color:var(--accent); font-weight:700; font-size:1.15rem; text-decoration:none; word-break:break-all }
   .contact a:hover { text-decoration:underline }
   .projects { display:flex; flex-direction:column }
@@ -71,8 +75,9 @@
       <div>
         <h3>Zaino 72 ore</h3>
         <p>Prepara lo zaino di evacuazione e le scorte di casa, auto e animali per le prime 72 ore di un'emergenza. Quantità calcolate sulla famiglia, promemoria delle scadenze, piano familiare, guide rapide e un pulsante SOS che prepara l'SMS con la tua posizione.</p>
+        <p class="preview">L'app è in anteprima (test chiuso su Google Play). Iscriviti alle novità con l'indirizzo Gmail che usi su Google Play: ti mando l'invito per provarla e, quando esce, l'avviso.</p>
         <div class="links">
-          <span>Google Play: in arrivo</span>
+          <a class="primary" href="zaino72-notizie/?src=sito">Prova l'anteprima e iscriviti alle novità</a>
           <a href="https://elconfa.github.io/zaino72-privacy/">Informativa privacy</a>
         </div>
       </div>
